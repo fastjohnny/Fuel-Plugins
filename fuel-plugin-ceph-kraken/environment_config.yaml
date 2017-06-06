@@ -1,0 +1,8 @@
+attributes:
+  metadata:
+    group: 'storage'
+  bluestore:
+    type: "checkbox"
+    weight: 5
+    value: false
+    label: "Enable BlueStore for OSD"

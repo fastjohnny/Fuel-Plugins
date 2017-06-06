@@ -1,0 +1,31 @@
+# Plugin name
+name: fuel-plugin-ceph-kraken
+title: Ceph Kraken with Bluestore support
+# Plugin version
+version: 0.1.2
+# Description
+description: Enables Ceph Kraken
+# Required fuel version
+fuel_version: ['9.0']
+# Groups
+groups: ['storage::cinder']
+# Licenses
+licenses: ['Apache License, Version 2.0']
+# Homepage
+homepage: 'https://gerrit.mirantis.com/sberbank/fuel-plugin-ceph-kraken'
+# Authors
+authors: ['Roman Klimenko <rklimenko@mirantis.com>']
+# Change `false` to `true` if the plugin can be installed in the environment
+# after the deployment.
+is_hotpluggable: true
+
+# The plugin is compatible with releases in the list
+releases:
+  - os: ubuntu
+    version: mitaka-9.0
+    mode: ['ha']
+    deployment_scripts_path: deployment_scripts/
+    repository_path: repositories/ubuntu
+
+# Version of plugin package
+package_version: '4.0.0'
