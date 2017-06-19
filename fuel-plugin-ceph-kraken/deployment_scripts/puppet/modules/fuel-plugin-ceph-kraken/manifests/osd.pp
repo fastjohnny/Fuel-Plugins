@@ -16,21 +16,21 @@ class fuel-plugin-ceph-kraken::osd {
 
    if $bluestore == true {
    exec { "Prepare OSD $name": 
-             command => "ceph-deploy --ceph-conf /root/ceph.conf --bluestore osd prepare localhost:$name$arr_len" 
+             command => "ceph-deploy --overwrite-conf --bluestore osd prepare localhost:$name$arr_len" 
         }
    ->
    exec { "Activate OSD $name": 
-             command => "ceph-deploy --ceph-conf /root/ceph.conf --bluestore osd activate localhost:$name$arr_len",
+             command => "ceph-deploy --overwrite-conf --bluestore osd activate localhost:$name$arr_len",
              tries => 2,
         }
    }
    if $bluestore != true {
    exec { "Prepare OSD $name":
-             command => "ceph-deploy --ceph-conf /root/ceph.conf osd prepare localhost:$name$arr_len"
+             command => "ceph-deploy --overwrite-conf osd prepare localhost:$name$arr_len"
         }
    ->
    exec { "Activate OSD $name":
-             command => "ceph-deploy --ceph-conf /root/ceph.conf osd activate localhost:$name$arr_len",
+             command => "ceph-deploy --overwrite-conf osd activate localhost:$name$arr_len",
              tries => 2,
         }
    }

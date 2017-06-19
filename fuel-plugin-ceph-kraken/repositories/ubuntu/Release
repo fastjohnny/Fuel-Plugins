@@ -1,2 +1,2 @@
-Label: fuel-plugin-ceph_multibackend
-Version: 1.8
+Label: fuel-plugin-ceph-kraken
+Version: 0.1
