@@ -1,0 +1,13 @@
+--- /etc/puppet/modules/ceph/manifests/radosgw.pp	2017-06-22 09:21:24.326908371 +0000
++++ radosgw.pp	2017-06-22 09:16:41.777139223 +0000
+@@ -225,8 +225,8 @@
+     unless  => "rados lspools | grep '^${rgw_large_pool_name}$'",
+   }
+ 
+-  file { $keyring_path: mode => '0640', }
+-
++  file { $keyring_path: mode => '0644', }
++#changed permissions for kraken ceph
+   file {"${rgw_data}/ceph-${rgw_id}/done":
+     ensure => present,
+     mode   => '0644',

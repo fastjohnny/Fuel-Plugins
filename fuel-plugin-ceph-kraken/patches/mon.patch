@@ -1,0 +1,19 @@
+--- /etc/puppet/modules/ceph/manifests/mon.pp	2017-06-22 10:39:02.968970221 +0000
++++ mon.pp	2017-06-22 13:44:10.751021279 +0000
+@@ -38,8 +38,16 @@
+     tries     => 6,
+   }
+ 
++#adding symlink for kraken ceph
++  file { "ceph link for $node_hostname":
++    path => '/etc/ceph/ceph.client.admin.keyring',
++    ensure => 'link',
++    target => '/root/ceph.client.admin.keyring',
++  }
++
+   Firewall['010 ceph-mon allow'] ->
+   Exec['ceph-deploy mon create'] ~>
++  File["ceph link for $node_hostname"] -> 
+   Exec['Wait for Ceph quorum']   ->
+   Exec['ceph-deploy gatherkeys']
+ 

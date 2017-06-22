@@ -1,0 +1,117 @@
+--- /etc/puppet/modules/ceph/manifests/conf.pp	2017-06-22 10:39:02.965970204 +0000
++++ conf.pp	2017-06-22 13:38:47.326173168 +0000
+@@ -2,10 +2,11 @@
+ class ceph::conf (
+   $mon_addr       = $::ceph::mon_addr,
+   $node_hostname  = $::ceph::node_hostname,
+-
+ ) {
+   if $node_hostname == $::ceph::primary_mon {
+-
++#added conditional for right kraken ceph conf
++    $fuel_plugin_ceph_kraken = hiera_hash('fuel-plugin-ceph-kraken', {})
++    $bluestore = pick($fuel_plugin_ceph_kraken['bluestore'], false)
+     exec {'ceph-deploy new':
+       command   => "ceph-deploy new ${node_hostname}:${mon_addr}",
+       cwd       => '/etc/ceph',
+@@ -23,31 +24,55 @@
+       ensure => link,
+       target => '/etc/ceph/ceph.mon.keyring',
+     }
+-
+-    ceph_conf {
+-      'global/auth_supported':                     value => $::ceph::auth_supported;
+-      'global/osd_journal_size':                   value => $::ceph::osd_journal_size;
+-      'global/osd_mkfs_type':                      value => $::ceph::osd_mkfs_type;
+-      'global/osd_pool_default_size':              value => $::ceph::osd_pool_default_size;
+-      'global/osd_pool_default_min_size':          value => $::ceph::osd_pool_default_min_size;
+-      'global/osd_pool_default_pg_num':            value => $::ceph::osd_pool_default_pg_num;
+-      'global/osd_pool_default_pgp_num':           value => $::ceph::osd_pool_default_pgp_num;
+-      'global/cluster_network':                    value => $::ceph::cluster_network;
+-      'global/public_network':                     value => $::ceph::public_network;
+-      'global/log_to_syslog':                      value => $::ceph::use_syslog;
+-      'global/log_to_syslog_level':                value => $::ceph::syslog_log_level;
+-      'global/log_to_syslog_facility':             value => $::ceph::syslog_log_facility;
+-      'global/osd_max_backfills':                  value => $::ceph::osd_max_backfills;
+-      'global/osd_recovery_max_active':            value => $::ceph::osd_recovery_max_active;
+-      'client/rbd_cache':                          value => $::ceph::rbd_cache;
+-      'client/rbd_cache_writethrough_until_flush': value => $::ceph::rbd_cache_writethrough_until_flush;
++    if $bluestore == false {
++       ceph_conf {
++         'global/auth_supported':                     value => $::ceph::auth_supported;
++         'global/osd_journal_size':                   value => $::ceph::osd_journal_size;
++         'global/osd_mkfs_type':                      value => $::ceph::osd_mkfs_type;
++         'global/osd_pool_default_size':              value => $::ceph::osd_pool_default_size;
++         'global/osd_pool_default_min_size':          value => $::ceph::osd_pool_default_min_size;
++         'global/osd_pool_default_pg_num':            value => $::ceph::osd_pool_default_pg_num;
++         'global/osd_pool_default_pgp_num':           value => $::ceph::osd_pool_default_pgp_num;
++         'global/cluster_network':                    value => $::ceph::cluster_network;
++         'global/public_network':                     value => $::ceph::public_network;
++         'global/log_to_syslog':                      value => $::ceph::use_syslog;
++         'global/log_to_syslog_level':                value => $::ceph::syslog_log_level;
++         'global/log_to_syslog_facility':             value => $::ceph::syslog_log_facility;
++         'global/osd_max_backfills':                  value => $::ceph::osd_max_backfills;
++         'global/osd_recovery_max_active':            value => $::ceph::osd_recovery_max_active;
++         'client/rbd_cache':                          value => $::ceph::rbd_cache;
++         'client/rbd_cache_writethrough_until_flush': value => $::ceph::rbd_cache_writethrough_until_flush;
+     }
+-
+     Exec['ceph-deploy new'] ->
+     File['/root/ceph.conf'] -> File['/root/ceph.mon.keyring'] ->
+     Ceph_conf <||>
+-
+-  } else {
++    }
++    elsif $bluestore == true {
++      ceph_conf {
++         'osd/enable experimental unrecoverable data corrupting features' : value => "bluestore, rocksdb";
++         'global/auth_supported':                     value => $::ceph::auth_supported;
++         'global/osd_journal_size':                   value => $::ceph::osd_journal_size;
++         'global/osd_mkfs_type':                      value => $::ceph::osd_mkfs_type;
++         'global/osd_pool_default_size':              value => $::ceph::osd_pool_default_size;
++         'global/osd_pool_default_min_size':          value => $::ceph::osd_pool_default_min_size;
++         'global/osd_pool_default_pg_num':            value => $::ceph::osd_pool_default_pg_num;
++         'global/osd_pool_default_pgp_num':           value => $::ceph::osd_pool_default_pgp_num;
++         'global/cluster_network':                    value => $::ceph::cluster_network;
++         'global/public_network':                     value => $::ceph::public_network;
++         'global/log_to_syslog':                      value => $::ceph::use_syslog;
++         'global/log_to_syslog_level':                value => $::ceph::syslog_log_level;
++         'global/log_to_syslog_facility':             value => $::ceph::syslog_log_facility;
++         'global/osd_max_backfills':                  value => $::ceph::osd_max_backfills;
++         'global/osd_recovery_max_active':            value => $::ceph::osd_recovery_max_active;
++         'client/rbd_cache':                          value => $::ceph::rbd_cache;
++         'client/rbd_cache_writethrough_until_flush': value => $::ceph::rbd_cache_writethrough_until_flush;
++        }
++    Exec['ceph-deploy new'] ->
++    File['/root/ceph.conf'] -> File['/root/ceph.mon.keyring'] ->
++    Ceph_conf <||>
++    }
++  } 
++    else {
+ 
+     exec {'ceph-deploy config pull':
+       command   => "ceph-deploy --overwrite-conf config pull ${::ceph::primary_mon}",
+@@ -72,14 +97,6 @@
+       try_sleep => 2,
+     }
+ 
+-    file {'/etc/ceph/ceph.client.admin.keyring':
+-      ensure => file,
+-      source => '/root/ceph.client.admin.keyring',
+-      mode   => '0600',
+-      owner  => 'root',
+-      group  => 'root',
+-    }
+-
+     exec {'ceph-deploy init config':
+       command => "ceph-deploy --overwrite-conf config push ${::hostname}",
+       creates => '/etc/ceph/ceph.conf',
+@@ -94,7 +111,6 @@
+       File['/root/ceph.conf'] ->
+         Ceph_conf[['global/cluster_network', 'global/public_network']] ->
+           Exec['ceph-deploy gatherkeys remote'] ->
+-            File['/etc/ceph/ceph.client.admin.keyring'] ->
+               Exec['ceph-deploy init config']
+-  }
++    }
+ }

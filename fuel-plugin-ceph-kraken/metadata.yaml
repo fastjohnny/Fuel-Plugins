@@ -2,11 +2,11 @@
 name: fuel-plugin-ceph-kraken
 title: Ceph Kraken with Bluestore support
 # Plugin version
-version: 0.1.3
+version: 0.2.4
 # Description
 description: Enables Ceph Kraken
 # Required fuel version
-fuel_version: ['9.0']
+fuel_version: ['9.2']
 # Groups
 groups: ['storage::cinder']
 # Licenses
