@@ -13,9 +13,6 @@ define ceph::osds::osd () {
   $bluestore = pick($fuel_plugin_ceph_kraken['bluestore'], false)
 
   if $bluestore == true {
-    ceph_conf {
-      'osd/enable experimental unrecoverable data corrupting features' : value => "bluestore, rocksdb";
-    } ->
     exec { "ceph-deploy blue osd prepare ${deploy_device_name}":
       # ceph-deploy osd prepare is ensuring there is a filesystem on the
       # disk according to the args passed to ceph.conf (above).

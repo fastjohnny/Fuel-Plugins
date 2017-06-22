@@ -10,9 +10,6 @@
  
    if $bluestore == true {
 -    exec { "ceph-deploy blue osd create ${deploy_device_name}":
-+    ceph_conf {
-+      'osd/enable experimental unrecoverable data corrupting features' : value => "bluestore, rocksdb";
-+    } ->
 +    exec { "ceph-deploy blue osd prepare ${deploy_device_name}":
        # ceph-deploy osd prepare is ensuring there is a filesystem on the
        # disk according to the args passed to ceph.conf (above).
