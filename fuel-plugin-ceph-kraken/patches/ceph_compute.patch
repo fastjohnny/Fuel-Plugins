@@ -1,0 +1,24 @@
+--- /etc/puppet/modules/osnailyfacter/manifests/ceph/ceph_compute.pp	2017-03-14 09:19:59.000000000 +0000
++++ ceph_compute.pp	2017-06-26 14:55:29.203953175 +0000
+@@ -82,6 +82,13 @@
+       Class['ceph::ephemeral'] ~>
+         Service[$::ceph::params::service_nova_compute]
+ 
++    #adding symlink for kraken ceph
++    file { "ceph link for $node_hostname":
++      path => '/etc/ceph/ceph.client.admin.keyring',
++      ensure => 'link',
++      target => '/root/ceph.client.admin.keyring',
++    }
++
+     ceph::pool { $compute_pool:
+       user          => $compute_user,
+       acl           => "mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=${cinder_pool}, allow rwx pool=${glance_pool}, allow rwx pool=${compute_pool}'",
+@@ -93,6 +100,7 @@
+     include ::ceph::nova_compute
+ 
+     Class['::ceph::conf'] ->
++    File["ceph link for $node_hostname"] ->
+     Ceph::Pool[$compute_pool] ->
+     Class['::ceph::nova_compute'] ~>
+     Service[$::ceph::params::service_nova_compute]

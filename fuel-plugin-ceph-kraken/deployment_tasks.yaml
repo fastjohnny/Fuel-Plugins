@@ -1,10 +1,42 @@
+- id: ceph-compute
+  type: skipped
+
+- id: compute
+  type: puppet
+  version: 2.1.0
+  requires: ['fp-ceph-kraken-ceph-compute']
+
+#- id: top-role-ceph-osd
+#  type: skipped
+
+- id: fp-ceph-kraken-ceph-compute
+  role: ['compute']
+  type: puppet
+  version: 2.1.0
+  parameters:
+    cwd: /
+    puppet_manifest: /etc/puppet/modules/osnailyfacter/modular/ceph/ceph_compute.pp
+    puppet_modules: /etc/puppet/modules
+    timeout: 3600
+  required_for: ['deploy_end']
+  requires: ['top-role-compute']
+  cross-depends:
+    - name: top-role-ceph-osd
+      role: ['ceph-osd'] 
+  cross_depended_by:
+    - name: ceph_ready_check
 - id: fp-ceph-kraken-conf
-  role: ['ceph-osd','controller','primary-controller']
+  role: ['ceph-osd']
   type: puppet
   version: 2.0.0
   parameters:
     puppet_manifest: puppet/manifests/conf.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 3600
-  requires: ['post_deployment_start']
-  required_for: ['ceph_ready_check']
+  requires: ['ceph-osd']
+  required_for: ['ceph_ready_check','fp-ceph-kraken-ceph-compute']
+  cross-depends:
+    - name: top-role-ceph-osd
+      role: ['ceph-osd']
+  cross_depended_by:
+    - name: ceph_ready_check
