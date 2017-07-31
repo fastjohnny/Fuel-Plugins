@@ -1,0 +1,34 @@
+# Plugin name
+name: fuel-plugin-prometheus
+# Human-readable name for your plugin
+title: Fuel Prometheus Plugin
+# Plugin version
+version: '1.0.4'
+# Description
+description: This plugin deploys prometheus nodes in HA mode with grafana support
+# Required fuel version
+fuel_version: ['9.2']
+# Specify license of your plugin
+licenses: ['Apache License Version 2.0']
+# Specify author or company name
+authors: ['Roman Klimenko']
+# A link to the plugin's page
+homepage: 'https://github.com/fastjohnny/Fuel-plugins/fuel-plugin-prometheus'
+# Specify a group which your plugin implements, possible options:
+# network, storage, storage::cinder, storage::glance, hypervisor,
+# equipment
+groups: []
+# Change `false` to `true` if the plugin can be installed in the environment
+# after the deployment.
+is_hotpluggable: true
+
+# The plugin is compatible with releases in the list
+releases:
+  - os: ubuntu
+    version: mitaka-9.0
+    mode: ['ha']
+    deployment_scripts_path: deployment_scripts/
+    repository_path: repositories/ubuntu
+
+# Version of plugin package
+package_version: '4.0.0'

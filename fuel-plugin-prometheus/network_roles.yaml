@@ -1,0 +1,26 @@
+# Network and virtual IP address for the Prometheus Service
+- id: "prometheus_vip"
+  default_mapping: "management"
+  properties:
+    subnet: true
+    gateway: false
+    vip:
+       - name: "prometheus"
+         namespace: "haproxy"
+         alias: "prometheus"
+         node_roles:
+           - "prometheus"
+           - "primary-prometheus"
+# Network and virtual IP address for the Ceilometer Exporter
+- id: "ceilometer_exporter_vip"
+  default_mapping: "management"
+  properties:
+    subnet: true
+    gateway: false
+    vip:
+       - name: "ceilometer_exporter_vip"
+         namespace: "haproxy"
+         alias: "ceilometer_exporter_vip"
+         node_roles:
+           - "prometheus"
+           - "primary-prometheus"

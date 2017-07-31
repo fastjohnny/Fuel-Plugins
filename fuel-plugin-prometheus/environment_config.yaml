@@ -1,0 +1,111 @@
+attributes:
+  metadata:
+    # Settings group can be one of "general", "security", "compute", "network",
+    # "storage", "logging", "openstack_services" and "other".
+    group: 'other'
+  fp-prometheus-ceph:
+    value: false
+    label: 'Ceph Exporter'
+    description: 'Ceph Exporter for Prometheus'
+    weight: 1
+    type: "checkbox"
+  fp-prometheus-ceph_port:
+    value: '9128'
+    label: 'Ceph exporter port'
+    description: 'Port for ceph exporter witch will be used in mgmt net on controller nodes'
+    weight: 2
+    type: "text"
+    restrictions:
+      - condition: "settings:fuel-plugin-prometheus.fp-prometheus-ceph.value != 'true'"
+        action: "disable"
+  fp-prometheus-mysql:
+    value: false
+    label: 'Mysql Exporter'
+    description: 'Mysql Exporter for Prometheus'
+    weight: 3
+    type: "checkbox"
+  fp-prometheus-mysql_port:
+    value: '9104'
+    label: 'Mysql exporter port'
+    description: 'Port for mysql exporter witch will be used in mgmt net on controller nodes'
+    weight: 4
+    type: "text"
+    restrictions:
+      - condition: "settings:fuel-plugin-prometheus.fp-prometheus-mysql.value != 'true'"
+        action: "disable"
+  fp-prometheus-rabbitmq:
+    value: false
+    label: 'Rabbitmq Exporter'
+    description: 'Rabbitmq Exporter for Prometheus'
+    weight: 5
+    type: "checkbox"
+  fp-prometheus-rabbitmq_port:
+    value: '9080'
+    label: 'Rabbitmq exporter port'
+    description: 'Port for rabbitmq exporter witch will be used in mgmt net on controller nodes'
+    weight: 6
+    type: "text"
+    restrictions:
+      - condition: "settings:fuel-plugin-prometheus.fp-prometheus-mysql.value != 'true'"
+        action: "disable"
+  fp-prometheus-haproxy:
+    value: false
+    label: 'Haproxy Exporter'
+    description: 'Haproxy Exporter for Prometheus'
+    weight: 7
+    type: "checkbox"
+  fp-prometheus-haproxy_port:
+    value: '9101'
+    label: 'Haproxy exporter port'
+    description: 'Port for haproxy exporter witch will be used in mgmt net on controller nodes'
+    weight: 8
+    type: "text"
+    restrictions:
+      - condition: "settings:fuel-plugin-prometheus.fp-prometheus-haproxy.value != 'true'"
+        action: "disable"
+  fp-prometheus-node:
+    value: false
+    label: 'Node Exporter'
+    description: 'Node stats Exporter for Prometheus'
+    weight: 9
+    type: "checkbox"
+  fp-prometheus-node_port:
+    value: '9100'
+    label: 'Node exporter port'
+    description: 'Port for node exporter witch will be used in mgmt net on ALL nodes'
+    weight: 10
+    type: "text"
+    restrictions:
+      - condition: "settings:fuel-plugin-prometheus.fp-prometheus-node.value != 'true'"
+        action: "disable"
+  fp-prometheus-openstack:
+    value: false
+    label: 'Openstack services Exporter'
+    description: 'Openstack services Exporter for Prometheus'
+    weight: 11
+    type: "checkbox"
+  fp-prometheus-openstack_port:
+    value: '9183'
+    label: 'Openstack exporter port'
+    description: 'Port for openstack exporter witch will be used in mgmt net on prometheus nodes'
+    weight: 12
+    type: "text"
+    restrictions:
+      - condition: "settings:fuel-plugin-prometheus.fp-prometheus-openstack.value != 'true'"
+        action: "disable"
+  fp-prometheus-ceilometer:
+    value: false
+    label: 'Ceilometer Exporter'
+    description: 'Ceilometer Exporter for Prometheus'
+    weight: 13
+    type: "checkbox"
+  fp-prometheus-ceilometer_port:
+    value: '9181'
+    label: 'Ceilometer exporter port'
+    description: 'Port for ceilometer exporter witch will be used in mgmt net on prometheus nodes'
+    weight: 14
+    type: "text"
+    restrictions:
+      - condition: "settings:fuel-plugin-prometheus.fp-prometheus-ceilometer.value != 'true'"
+        action: "disable"
+

@@ -1,0 +1,66 @@
+- id: fp-prometheus-pre
+  type: group
+  version: 2.0.0
+  role: ['primary-prometheus','prometheus']
+  requires: ['deploy_start']
+  required_for: ['fp-prometheus-hiera']
+  tasks: [ 'dns-client', 'setup_repositories', 'hiera', 'globals', 'ntp-client', 'tools', 'logging', 'netconfig', 'hosts', 'firewall', 'ssl-keys-saving', 'ssl-add-trust-chain', 'fuel_pkgs' ]
+  parameters:
+    timeout: 3600
+    strategy:
+      type: one_by_one
+- id: fp-prometheus-hiera
+  type: puppet
+  version: 2.0.0
+  role: ['primary-prometheus','prometheus']
+  requires: ['hiera','globals']
+  required_for: ['deploy_end']
+  parameters:
+    puppet_manifest: puppet/manifests/override.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+- id: fp-prometheus-firewall
+  type: puppet
+  version: 2.0.0
+  role: ['*']
+  requires: ['fuel_pkgs','firewall','fp-prometheus-hiera','hosts']
+  required_for: ['fp-prometheus-cluster']
+  parameters:
+    puppet_manifest: puppet/manifests/firewall.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 600
+- id: fp-prometheus-cluster
+  type: puppet
+  version: 2.0.0
+  role: ['primary-prometheus','prometheus']
+  requires: ['fp-prometheus-firewall','fp-prometheus-hiera']
+  required_for: ['deploy_end']
+  cross-depends:
+    - name: 'fp-prometheus-cluster'
+      role: 'primary-prometheus'
+  parameters:
+    puppet_manifest: '/etc/puppet/modules/osnailyfacter/modular/cluster/cluster.pp'
+    puppet_modules: '/etc/puppet/modules'
+    timeout: 3600
+    strategy:
+      type: one_by_one
+- id: fp-prometheus-haproxy-cluster
+  type: puppet
+  version: 2.0.0
+  role: ['primary-prometheus','prometheus']
+  requires: ['fp-prometheus-cluster']
+  required_for: ['deploy_end']
+  parameters:
+    puppet_manifest: /etc/puppet/modules/osnailyfacter/modular/cluster-haproxy/cluster-haproxy.pp
+    puppet_modules: /etc/puppet/modules
+    timeout: 600
+- id: fp-prometheus-vips
+  type: puppet
+  version: 2.0.0
+  role: ['primary-prometheus','prometheus']
+  requires: ['fp-prometheus-cluster','fp-prometheus-haproxy-cluster']
+  required_for: ['deploy_end']
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/osnailyfacter/modular/virtual_ips/virtual_ips.pp"
+    puppet_modules: /etc/puppet/modules
+    timeout: 600
